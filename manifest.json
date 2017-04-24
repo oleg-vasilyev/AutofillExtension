@@ -1,14 +1,14 @@
 {
-	"name": "AutofillExtension",
-	"version": "0.1",
-	"description": "AutofillExtension",
 	"manifest_version": 2,
-	"permissions": [
-		"activeTab",
-		"tabs"
-	],
+	"name": "AutofillExtension",
+	"version": "1.0.0",
+
 	"browser_action": {
 		"default_title": "AutofillExtension",
 		"default_popup": "index.html"
-	}
+	},
+
+	"permissions": [
+		"activeTab"
+	]
 }

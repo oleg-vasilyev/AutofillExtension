@@ -1,160 +1,70 @@
-﻿document.getElementById("fakeInputBtn").addEventListener('click', () => {
+﻿document.getElementById("btn").addEventListener('click', () => {
 
 	function modifyDOM() {
-		let string = ` Я помню чудное мгновенье:
-		Передо мной явилась ты,
-			Как мимолетное виденье,
-				Как гений чистой красоты.
 
-		В томленьях грусти безнадежной
-		В тревогах шумной суеты,
-			Звучал мне долго голос нежный
-		И снились милые черты.
-
-		Шли годы.Бурь порыв мятежный
-		Рассеял прежние мечты,
-			И я забыл твой голос нежный,
-				Твои небесные черты.
-
-		В глуши, во мраке заточенья
-		Тянулись тихо дни мои
-		Без божества, без вдохновенья,
-			Без слез, без жизни, без любви.
-
-		Душе настало пробужденье:
-		И вот опять явилась ты,
-			Как мимолетное виденье,
-				Как гений чистой красоты.
-
-		И сердце бьется в упоенье,
-			И для него воскресли вновь
-		И божество, и вдохновенье,
-			И жизнь, и слезы, и любовь. `;
-
-		let index = 0;
-		let element = document.body.getElementsByClassName("im_editable im-chat-input--text _im_text")[0];
-		element.addEventListener("keydown", (listener) => {
-
-			event.preventDefault();
-
-			if (listener.code === "Backspace") {
-				element.textContent = element.textContent.slice(0, -1);
-
-				if (index > 0) {
-					index--;
-				}
-				else {
-					index = 0;
-				}
-			}
-			else {
-				element.textContent += string[index];
-				if (index === string.length - 1) {
-					index = 0;
-				}
-				else {
-					index++;
-				}
-			}
-
-			(function (cursorManager) {
-
-				//From: http://www.w3.org/TR/html-markup/syntax.html#syntax-elements
-				var voidNodeTags = ['AREA', 'BASE', 'BR', 'COL', 'EMBED', 'HR', 'IMG', 'INPUT', 'KEYGEN', 'LINK', 'MENUITEM', 'META', 'PARAM', 'SOURCE', 'TRACK', 'WBR', 'BASEFONT', 'BGSOUND', 'FRAME', 'ISINDEX'];
-
-				//From: http://stackoverflow.com/questions/237104/array-containsobj-in-javascript
-				Array.prototype.contains = function (obj) {
-					var i = this.length;
-					while (i--) {
-						if (this[i] === obj) {
-							return true;
-						}
-					}
-					return false;
-				}
-				//Basic idea from: http://stackoverflow.com/questions/19790442/test-if-an-element-can-contain-text
-				function canContainText(node) {
-					if (node.nodeType == 1) { //is an element node
-						return !voidNodeTags.contains(node.nodeName);
-					} else { //is not an element node
-						return false;
-					}
-				};
-
-				function getLastChildElement(el) {
-					var lc = el.lastChild;
-					while (lc && lc.nodeType != 1) {
-						if (lc.previousSibling)
-							lc = lc.previousSibling;
-						else
-							break;
-					}
-					return lc;
-				}
-
-				//Based on Nico Burns's answer
-				cursorManager.setEndOfContenteditable = function (contentEditableElement) {
-
-					while (getLastChildElement(contentEditableElement) &&
-						canContainText(getLastChildElement(contentEditableElement))) {
-						contentEditableElement = getLastChildElement(contentEditableElement);
-					}
-
-					var range, selection;
-					if (document.createRange)//Firefox, Chrome, Opera, Safari, IE 9+
-					{
-						range = document.createRange();//Create a range (a range is a like the selection but invisible)
-						range.selectNodeContents(contentEditableElement);//Select the entire contents of the element with the range
-						range.collapse(false);//collapse the range to the end point. false means collapse to end rather than the start
-						selection = window.getSelection();//get the selection object (allows you to change selection)
-						selection.removeAllRanges();//remove any selections already made
-						selection.addRange(range);//make the range you have just created the visible selection
-					}
-					else if (document.selection)//IE 8 and lower
-					{
-						range = document.body.createTextRange();//Create a range (a range is a like the selection but invisible)
-						range.moveToElementText(contentEditableElement);//Select the entire contents of the element with the range
-						range.collapse(false);//collapse the range to the end point. false means collapse to end rather than the start
-						range.select();//Select the range (make it the visible selection
-					}
-				}
-
-			}(window.cursorManager = window.cursorManager || {}));
-
-			cursorManager.setEndOfContenteditable(element);
-		}, false);
-
-		return document.body.innerHTML;
-	}
-
-	chrome.tabs.executeScript({
-		code: '(' + modifyDOM + ')();'
-	}, (results) => { });
-});
-
-document.getElementById("randomFillBtn").addEventListener('click', () => {
-
-	function modifyDOM() {
+		let textArr = [
+			`Нам жизнь навязана: ее водоворот
+			Ошеломляет нас, но миг один - и вот
+			Уже пора уйти, не зная цели жизни,
+			Приход бессмысленный, бессмысленный уход!`,
+			`Тот, кто с юности верует в собственный ум,
+			Стал в погоне за истиной сух и угрюм.
+			Притязающий с детства на знание жизни,
+			Виноградом не став, превратился в изюм.`,
+			`Что миру до тебя? Ты перед ним ничто:
+			Существование твое лишь дым, ничто.
+			Две бездны с двух сторон небытием зияют,
+			И между ними ты, подобно им, — ничто.`,
+			`Охотно платим мы за всякое вино,
+			А мир? Цена ему - ячменное зерно.
+			"Окончив жизнь, куда уйдем?" Вина налей мне
+			И можешь уходить, - куда, мне все равно.`,
+			`Мужи, чьей мудростью, был этот мир пленен, 
+			В которых светочей познанья видел он, 
+			Дороги не нашли из этой ночи темной, 
+			Посуесловили и погрузились в сон.`,
+			`Ты сегодня не властен над завтрашним днем,
+			Твои замыслы завтра развеются сном!
+			Ты сегодня живи, если ты не безумен.
+			Ты — не вечен, как все в этом мире земном.`,
+			`День завтрашний — увы! — сокрыт от наших глаз!
+			Спеши использовать летящий в бездну час.
+			Пей, луноликая! Как часто будет месяц
+			Всходить на небеса, уже не видя нас.`,
+			`Вот снова день исчез, как ветра легкий стон,
+			Из нашей жизни, друг, навеки вышел он.
+			Но я, покуда жив, тревожиться не стану
+			О дне, что отошел, и дне, что не рожден.`,
+			`Из верченья гончарного круга времен
+			Смысл извлек тонко тот, кто учен и умен,
+			Или пьяный, привычный к вращению мира,
+			Ничего ровным счетом не смыслящий в нем!`,
+			`Смысла нет перед будущем дверь запирать,
+			Смысла нет между злом и добром выбирать.
+			Небо мечет вслепую игральные кости.
+			Все, что выпало, надо успеть проиграть.`,
+			`Жизнь пронесется, как одно мгновенье,
+			Ее цени, в ней черпай наслажденье.
+			Как проведешь ее — так и пройдет,
+			Не забывай: она — твое творенье.`,
+			`Ты все пытаешься проникнуть в тайны света, 
+			В загадку бытия... К чему, мой друг, всё это? 
+			Ночей и дней часы беспечно проводи, 
+			Ведь всё устроено без твоего совета. `
+		];
 
 		let randomInRange = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-		let textArr = [
-			"Привет, как дела?",
-			"Что нового?",
-			"Чмоки всем в этом чате",
-			"Случайный текст",
-			"Еще текст"
-		];
 		let randomIndex = randomInRange(0, textArr.length - 1);
 
-		let element = document.body.getElementsByClassName("im_editable im-chat-input--text _im_text")[0];
+		let input = document.body.querySelector("#post_field");
+		input.textContent = textArr[randomIndex];
 
-		element.click();
-		element.textContent = textArr[randomIndex];
+		let sendBtn = document.body.querySelector("#send_post");
+		sendBtn.click();
+
 		return document.body.innerHTML;
 	}
 
-	chrome.tabs.executeScript({
-		code: '(' + modifyDOM + ')();'
-	}, (results) => { });
+	chrome.tabs.executeScript( { code: '(' + modifyDOM + ')();' }, (results) => { } );
 });
 
