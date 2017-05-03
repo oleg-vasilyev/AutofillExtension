@@ -57,7 +57,7 @@
 		let randomIndex = randomInRange(0, textArr.length - 1);
 
 		let input = document.body.querySelector("#post_field");
-		input.textContent = textArr[randomIndex];
+		input.innerHTML = textArr[randomIndex].replace(/	/g, '<br/>').replace(/[<br\/>]+/g, '<br/>');;
 
 		let sendBtn = document.body.querySelector("#send_post");
 		sendBtn.click();
@@ -67,4 +67,3 @@
 
 	chrome.tabs.executeScript( { code: '(' + modifyDOM + ')();' }, (results) => { } );
 });
-
